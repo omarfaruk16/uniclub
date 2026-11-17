@@ -1,0 +1,17 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: ${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY:-}
+    container_name: uniclub_app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: file:/app/data/unique.db
+    ports:
+      - "127.0.0.1:3070:3070"
+    volumes:
+      - ./data:/app/data        # SQLite database
+      - ./uploads:/app/uploads  # logos, covers, event banners, avatars

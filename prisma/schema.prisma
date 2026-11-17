@@ -1,0 +1,173 @@
+// UniQue - University Club & Event Management System
+// Core collections from the project outline: Users, Clubs, Memberships, Events,
+// Registrations, Announcements, Notifications (+ Sessions, PasswordResets, Settings).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// role:   STUDENT | REP | ADMIN
+// status: ACTIVE | SUSPENDED
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  studentId    String?  @unique
+  passwordHash String
+  role         String   @default("STUDENT")
+  status       String   @default("ACTIVE")
+  avatar       String?
+  department   String?
+  phone        String?
+  bio          String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sessions       Session[]
+  resets         PasswordReset[]
+  memberships    Membership[]
+  registrations  Registration[]
+  notifications  Notification[]
+  announcements  Announcement[]
+  managedClub    Club?           @relation("ClubRep")
+  proposedClubs  Club[]          @relation("ClubProposer")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model PasswordReset {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+// status: PENDING | APPROVED | REJECTED | SUSPENDED
+model Club {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String   @unique
+  category         String
+  shortDescription String
+  description      String
+  objectives       String   @default("") // one objective per line
+  logo             String?
+  cover            String?
+  email            String?
+  foundedYear      Int?
+  status           String   @default("PENDING")
+  featured         Boolean  @default(false)
+  rejectionReason  String?
+  repId            String?  @unique
+  rep              User?    @relation("ClubRep", fields: [repId], references: [id], onDelete: SetNull)
+  proposedById     String?
+  proposedBy       User?    @relation("ClubProposer", fields: [proposedById], references: [id], onDelete: SetNull)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  memberships   Membership[]
+  events        Event[]
+  announcements Announcement[]
+}
+
+// status: PENDING | APPROVED | REJECTED
+model Membership {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clubId    String
+  club      Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  status    String   @default("PENDING")
+  position  String   @default("Member")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, clubId])
+}
+
+// status: DRAFT | PUBLISHED | CANCELLED   (completed is derived from endAt)
+model Event {
+  id                   String   @id @default(cuid())
+  clubId               String
+  club                 Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  title                String
+  description          String
+  category             String
+  venue                String
+  image                String?
+  startAt              DateTime
+  endAt                DateTime
+  registrationDeadline DateTime
+  capacity             Int?
+  membersOnly          Boolean  @default(false)
+  featured             Boolean  @default(false)
+  status               String   @default("DRAFT")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  registrations Registration[]
+}
+
+// status: REGISTERED | CANCELLED     attendance: PENDING | ATTENDED | ABSENT
+model Registration {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId    String
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  status     String   @default("REGISTERED")
+  attendance String   @default("PENDING")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, eventId])
+}
+
+// clubId = null  -> university-wide notice
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  category  String   @default("General")
+  pinned    Boolean  @default(false)
+  clubId    String?
+  club      Club?    @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  authorId  String?
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  body      String
+  link      String?
+  type      String   @default("info")
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+}
+
+model Setting {
+  key   String @id
+  value String
+}
