@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/toast";
 import { getSettings } from "@/lib/settings";
@@ -7,13 +7,9 @@ import { getSettings } from "@/lib/settings";
 // Settings (site name, registration toggle…) can change at any time, so never prerender.
 export const dynamic = "force-dynamic";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-poppins",
-  display: "swap",
-});
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-jakarta", display: "swap" });
+
+export const viewport: Viewport = { themeColor: "#176B50", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
@@ -25,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
+    <html lang="en" className={jakarta.variable}>
       <body className="min-h-screen">
         <ToastProvider>{children}</ToastProvider>
       </body>

@@ -106,10 +106,14 @@ export function Cover({
         <img src={src} alt="" className="absolute inset-0 size-full object-cover" />
       ) : (
         <>
-          <div className="pattern-dots absolute inset-0" />
-          <div className="absolute -top-10 -right-10 size-40 rounded-full bg-white/10" />
-          <div className="absolute -bottom-16 -left-8 size-48 rounded-full bg-gold-400/15" />
-          <Icon className={cn("absolute right-6 bottom-5 text-white/25", iconSize)} />
+          <div className="pattern-grid absolute inset-0" />
+          <svg aria-hidden viewBox="0 0 200 200" className="absolute -right-10 -bottom-16 size-56 text-white/15">
+            <circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" strokeWidth="2" />
+            <circle cx="100" cy="100" r="66" fill="none" stroke="currentColor" strokeWidth="2" />
+            <circle cx="100" cy="100" r="36" fill="currentColor" />
+          </svg>
+          <span className="absolute top-4 left-4 h-1.5 w-10 rounded-full bg-gold-400/80" />
+          <Icon className={cn("absolute right-6 bottom-5 text-white/40", iconSize)} />
         </>
       )}
       {children}
@@ -117,19 +121,20 @@ export function Cover({
   );
 }
 
-export function Logo({ name = "UniQue", light = false }: { name?: string; light?: boolean }) {
+export function Logo({ name = "UniQue", light = false, compact = false }: { name?: string; light?: boolean; compact?: boolean }) {
   return (
     <span className="inline-flex items-center gap-2.5">
-      <span className="relative flex size-9 items-center justify-center rounded-xl bg-brand-600 shadow-sm">
-        <svg viewBox="0 0 64 64" className="size-6" aria-hidden>
-          <path d="M20 16v19a12 12 0 0 0 24 0V16" fill="none" stroke="#fff" strokeWidth="7" strokeLinecap="round" />
+      <span className="relative flex size-9 items-center justify-center rounded-[11px] bg-brand-600">
+        <svg viewBox="0 0 32 32" className="size-[22px]" aria-hidden>
+          <path d="M9 7v9.5a7 7 0 0 0 14 0V7" fill="none" stroke="#fff" strokeWidth="3.6" strokeLinecap="round" />
+          <circle cx="23" cy="25.5" r="3" fill="#F5B942" />
         </svg>
-        <span className="absolute -right-0.5 -bottom-0.5 size-3 rounded-full bg-gold-400 ring-2 ring-white" />
       </span>
-      <span className={cn("font-display text-xl font-bold tracking-tight", light ? "text-white" : "text-brand-800")}>
-        {name.slice(0, 3)}
-        <span className={light ? "text-gold-300" : "text-brand-600"}>{name.slice(3)}</span>
-      </span>
+      {!compact && (
+        <span className={cn("font-display text-[1.3rem] font-bold tracking-tight", light ? "text-white" : "text-ink")}>
+          {name}
+        </span>
+      )}
     </span>
   );
 }

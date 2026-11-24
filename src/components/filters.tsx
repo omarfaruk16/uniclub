@@ -32,9 +32,9 @@ export function Filters({ placeholder = "Search…", selects = [], tabs }: { pla
   }, [q]);
 
   return (
-    <div className="mb-6 space-y-3">
+    <div className="mb-5 space-y-3">
       {tabs && (
-        <div className="flex gap-1 overflow-x-auto rounded-xl bg-brand-50 p-1 sm:inline-flex">
+        <div className="flex gap-1 overflow-x-auto scrollbar-none rounded-xl border border-line bg-white p-1 sm:inline-flex">
           {tabs.options.map((o) => {
             const active = (params.get(tabs.name) ?? tabs.options[0]!.value) === o.value;
             return (
@@ -42,7 +42,7 @@ export function Filters({ placeholder = "Search…", selects = [], tabs }: { pla
                 key={o.value}
                 type="button"
                 onClick={() => update({ [tabs.name]: o.value === tabs.options[0]!.value ? "" : o.value })}
-                className={`rounded-lg px-4 py-1.5 text-sm font-medium whitespace-nowrap transition ${active ? "bg-white text-brand-700 shadow-sm" : "text-slate-600 hover:text-brand-700"}`}
+                className={`rounded-lg px-4 py-1.5 text-sm font-medium whitespace-nowrap transition ${active ? "bg-ink text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"}`}
               >
                 {o.label}
               </button>

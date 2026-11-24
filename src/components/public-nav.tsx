@@ -30,20 +30,20 @@ export function PublicNav({ user, siteName }: { user: NavUser; siteName: string 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-line bg-white/90 backdrop-blur-md">
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <Link href="/" aria-label={`${siteName} home`}>
           <Logo name={siteName} />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
+        <nav className="hidden items-center gap-1 rounded-full border border-line bg-slate-50/70 p-1 md:flex" aria-label="Main">
           {LINKS.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               className={cn(
-                "rounded-lg px-3 py-2 text-sm font-medium transition",
-                isActive(l.href) ? "bg-brand-50 text-brand-700" : "text-slate-600 hover:text-brand-700",
+                "rounded-full px-4 py-1.5 text-sm font-medium transition",
+                isActive(l.href) ? "bg-ink text-white" : "text-slate-600 hover:text-slate-900",
               )}
             >
               {l.label}
@@ -54,17 +54,17 @@ export function PublicNav({ user, siteName }: { user: NavUser; siteName: string 
         <div className="hidden items-center gap-2 md:flex">
           {user ? (
             <div className="relative">
-              <button onClick={() => setMenu((m) => !m)} className="flex items-center gap-2 rounded-full border border-slate-200 py-1 pr-3 pl-1 hover:border-brand-300" aria-expanded={menu} aria-haspopup="menu">
+              <button onClick={() => setMenu((m) => !m)} className="flex items-center gap-2 rounded-full border border-line py-1 pr-3 pl-1 hover:border-slate-300" aria-expanded={menu} aria-haspopup="menu">
                 <Avatar name={user.name} src={user.avatar} size={30} />
-                <span className="max-w-32 truncate text-sm font-medium text-slate-700">{user.name.split(" ")[0]}</span>
+                <span className="max-w-32 truncate text-sm font-medium text-slate-700">{user.name.replace(/^(dr|mr|mrs|ms|prof)\.?\s+/i, "").split(" ")[0]}</span>
               </button>
               {menu && (
                 <div role="menu" className="absolute right-0 mt-2 w-56 animate-fade-in rounded-xl border border-slate-100 bg-white p-1.5 shadow-lift">
-                  <Link href={user.home} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-brand-50" role="menuitem">
+                  <Link href={user.home} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100" role="menuitem">
                     <LayoutDashboard className="size-4" /> Dashboard
                   </Link>
                   {user.role === "REP" && (
-                    <Link href="/student/dashboard" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-brand-50" role="menuitem">
+                    <Link href="/student/dashboard" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100" role="menuitem">
                       <LayoutDashboard className="size-4" /> Student dashboard
                     </Link>
                   )}
@@ -78,14 +78,14 @@ export function PublicNav({ user, siteName }: { user: NavUser; siteName: string 
             </div>
           ) : (
             <>
-              <Link href="/login" className="btn btn-ghost">Log in</Link>
-              <Link href="/register" className="btn btn-primary">Register</Link>
+              <Link href="/login" className="btn btn-ghost rounded-full">Log in</Link>
+              <Link href="/register" className="btn btn-primary rounded-full">Register</Link>
             </>
           )}
         </div>
 
-        <button className="rounded-lg p-2 text-slate-600 hover:bg-brand-50 md:hidden" onClick={() => setOpen((o) => !o)} aria-label="Toggle menu" aria-expanded={open}>
-          {open ? <X className="size-6" /> : <Menu className="size-6" />}
+        <button className="icon-btn md:hidden" onClick={() => setOpen((o) => !o)} aria-label="Toggle menu" aria-expanded={open}>
+          {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
       </div>
 
@@ -93,7 +93,7 @@ export function PublicNav({ user, siteName }: { user: NavUser; siteName: string 
         <div className="animate-fade-in border-t border-slate-100 bg-white md:hidden">
           <nav className="container-page flex flex-col gap-1 py-3" aria-label="Mobile">
             {LINKS.map((l) => (
-              <Link key={l.href} href={l.href} className={cn("rounded-lg px-3 py-2.5 text-sm font-medium", isActive(l.href) ? "bg-brand-50 text-brand-700" : "text-slate-700")}>
+              <Link key={l.href} href={l.href} className={cn("rounded-xl px-4 py-3 text-[15px] font-medium", isActive(l.href) ? "bg-ink text-white" : "text-slate-700 hover:bg-slate-50")}>
                 {l.label}
               </Link>
             ))}

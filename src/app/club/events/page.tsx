@@ -45,7 +45,7 @@ export default async function ManageEventsPage({ searchParams }: { searchParams:
       <PageHeader title="Manage Events" description="Edit, publish, cancel or delete your club's events." actions={<Link href="/club/events/new" className="btn btn-primary"><CalendarPlus className="size-4" /> Create event</Link>} />
       <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl bg-white p-1 shadow-card sm:inline-flex">
         {TABS.map(([v, l], i) => (
-          <Link key={v} href={v === "upcoming" ? "/club/events" : `/club/events?tab=${v}`} className={cn("rounded-lg px-4 py-1.5 text-sm font-medium whitespace-nowrap", tab === v ? "bg-brand-600 text-white" : "text-slate-600 hover:bg-brand-50")}>
+          <Link key={v} href={v === "upcoming" ? "/club/events" : `/club/events?tab=${v}`} className={cn("rounded-lg px-4 py-1.5 text-sm font-medium whitespace-nowrap", tab === v ? "bg-ink text-white" : "text-slate-600 hover:bg-slate-100")}>
             {l} ({counts[i]})
           </Link>
         ))}

@@ -74,7 +74,7 @@ export default async function ClubDetailsPage({ params }: P) {
             <p className="mt-1 text-slate-500">{club.shortDescription}</p>
           </div>
           {user?.role !== "ADMIN" && (
-          <div className="self-start rounded-2xl bg-brand-700 p-2.5 shadow-card sm:mt-4">
+          <div className="self-start rounded-2xl bg-ink p-2.5 sm:mt-4">
             <JoinClubButton
               clubId={club.id}
               clubName={club.name}

@@ -12,8 +12,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { next } = await searchParams;
   return (
     <>
-      <h1 className="text-3xl font-bold">Welcome back</h1>
-      <p className="mt-2 mb-8 text-slate-500">Sign in to your account to continue.</p>
+      <h1>Welcome back</h1>
+      <p className="mt-2 mb-8 text-slate-500">Log in to join clubs, register for events and follow campus news.</p>
       <LoginForm next={next ?? ""} demo={process.env.DEMO_MODE === "true"} />
     </>
   );

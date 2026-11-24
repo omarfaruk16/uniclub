@@ -13,7 +13,7 @@ export default async function RegisterPage() {
   if (user) redirect(ROLE_HOME[user.role] ?? "/");
   return (
     <>
-      <h1 className="text-3xl font-bold">Create your account</h1>
+      <h1>Create your account</h1>
       <p className="mt-2 mb-8 text-slate-500">Student registration for {settings.universityName}.</p>
       {flag(settings.allowRegistration) ? (
         <RegisterForm />

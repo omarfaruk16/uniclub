@@ -1,43 +1,32 @@
 import Link from "next/link";
-import { CalendarCheck, Megaphone, Users } from "lucide-react";
 import { Logo } from "@/components/visuals";
+import { CampusScene } from "@/components/campus-scene";
+import { ClubCardMini, NextEventCard, RegisteredCard, sceneData } from "@/components/scene-cards";
 import { getSettings } from "@/lib/settings";
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
-  const s = await getSettings();
+  const [s, data] = await Promise.all([getSettings(), sceneData()]);
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
-      <div className="flex flex-col px-4 py-8 sm:px-10">
-        <Link href="/" aria-label="Home"><Logo name={s.siteName} /></Link>
-        <div className="flex flex-1 items-center justify-center py-10">
-          <div className="w-full max-w-md">{children}</div>
+    <div className="relative min-h-dvh bg-[#E4F0E7] lg:h-dvh lg:overflow-hidden">
+      {/* Illustrated scene: full panel on desktop, header strip on phones */}
+      <div className="relative h-[34vh] min-h-56 overflow-hidden bg-gradient-to-br from-[#EEF7F0] via-[#E1EFE5] to-[#CFE5D6] lg:absolute lg:inset-0 lg:h-auto">
+        <div className="absolute inset-0 lg:right-[min(46vw,600px)]">
+          <CampusScene className="absolute inset-x-0 bottom-0 h-full w-full overflow-visible lg:inset-y-0" />
+          <NextEventCard data={data} className="absolute top-[13%] right-[6%] hidden animate-float xl:block" />
+          <RegisteredCard data={data} className="absolute top-[46%] right-[3%] hidden animate-float [animation-delay:1.5s] xl:flex" />
+          <ClubCardMini data={data} className="absolute bottom-[6%] left-[5%] hidden animate-float [animation-delay:3s] xl:block" />
         </div>
-        <p className="text-center text-xs text-slate-400">© {new Date().getFullYear()} {s.siteName} · {s.universityName}</p>
+        <Link href="/" aria-label={`${s.siteName} home`} className="absolute top-4 left-4 rounded-2xl bg-white/80 px-3 py-2 backdrop-blur lg:top-7 lg:left-8">
+          <Logo name={s.siteName} />
+        </Link>
       </div>
-      <div className="relative hidden overflow-hidden bg-brand-800 lg:block">
-        <div className="pattern-dots absolute inset-0" />
-        <div className="absolute -top-20 -right-20 size-96 rounded-full bg-brand-600/60 blur-3xl" />
-        <div className="absolute -bottom-24 -left-10 size-96 rounded-full bg-gold-400/20 blur-3xl" />
-        <div className="relative flex h-full flex-col justify-center p-14">
-          <h2 className="max-w-md text-4xl leading-tight font-bold text-white">
-            Every club. Every event. <span className="text-gold-400">One campus.</span>
-          </h2>
-          <p className="mt-4 max-w-md text-brand-100">{s.tagline}</p>
-          <ul className="mt-10 space-y-4">
-            {[
-              [Users, "Join clubs and track your membership status"],
-              [CalendarCheck, "Register for events in a single click"],
-              [Megaphone, "Get university and club announcements instantly"],
-            ].map(([Icon, text]) => {
-              const I = Icon as typeof Users;
-              return (
-                <li key={text as string} className="flex items-center gap-3 text-brand-50">
-                  <span className="flex size-10 items-center justify-center rounded-xl bg-white/10 text-gold-300"><I className="size-5" /></span>
-                  {text as string}
-                </li>
-              );
-            })}
-          </ul>
+
+      {/* Form card */}
+      <div className="relative z-10 -mt-8 lg:absolute lg:inset-y-5 lg:right-5 lg:mt-0 lg:w-[min(46vw,580px)]">
+        <div className="auth flex min-h-[calc(66vh+2rem)] flex-col rounded-t-[28px] bg-white px-5 pt-8 pb-6 sm:px-10 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:rounded-[28px] lg:shadow-[0_30px_80px_-30px_rgb(11_52_40/0.35)]">
+          <div className="mx-auto hidden lg:block"><Logo name={s.siteName} /></div>
+          <div className="mx-auto flex w-full max-w-[400px] flex-1 flex-col justify-center py-4 lg:py-10">{children}</div>
+          <p className="text-center text-xs text-slate-400">© {new Date().getFullYear()} {s.siteName} · {s.universityName}</p>
         </div>
       </div>
     </div>

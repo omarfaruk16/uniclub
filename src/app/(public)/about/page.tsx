@@ -71,12 +71,12 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        <section className="grid gap-6 rounded-3xl bg-brand-800 p-8 sm:p-10 md:grid-cols-3">
+        <section className="grid gap-6 pattern-grid rounded-3xl bg-ink p-8 sm:p-10 md:grid-cols-3">
           {features.map(({ icon: Icon, title, text }) => (
             <div key={title}>
               <Icon className="mb-3 size-7 text-gold-400" />
               <h3 className="font-semibold text-white">{title}</h3>
-              <p className="mt-1 text-sm text-brand-200">{text}</p>
+              <p className="mt-1 text-sm text-white/60">{text}</p>
             </div>
           ))}
         </section>

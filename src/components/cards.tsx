@@ -16,22 +16,22 @@ export function ClubCard({
   membership?: string;
 }) {
   return (
-    <Link href={`/clubs/${club.slug}`} className="card card-hover group flex flex-col overflow-hidden">
-      <Cover src={club.cover} seed={club.name} category={club.category} className="h-28" iconSize="size-12" />
-      <div className="flex flex-1 flex-col px-5 pb-5">
+    <Link href={`/clubs/${club.slug}`} className="card card-hover group flex flex-col p-2">
+      <Cover src={club.cover} seed={club.name} category={club.category} className="h-28 rounded-xl" iconSize="size-12" />
+      <div className="flex flex-1 flex-col px-3 pb-3">
         <div className="-mt-8 mb-3 flex items-end justify-between">
           <ClubLogo name={club.name} src={club.logo} category={club.category} size={60} className="shadow-md ring-4 ring-white" />
           {membership === "APPROVED" && <StatusBadge status="APPROVED" label="Member" />}
           {membership === "PENDING" && <StatusBadge status="PENDING" />}
         </div>
-        <Badge tone="green" className="mb-2 self-start">{club.category}</Badge>
+        <p className="mb-1 text-xs font-semibold text-brand-600">{club.category}</p>
         <h3 className="font-display text-base font-semibold text-slate-900 group-hover:text-brand-700">{club.name}</h3>
         <p className="mt-1 line-clamp-2 flex-1 text-sm text-slate-500">{club.shortDescription}</p>
-        <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 text-[13px] whitespace-nowrap">
+        <div className="mt-4 flex items-center justify-between gap-2 border-t border-line pt-3 text-[13px] whitespace-nowrap">
           <span className="inline-flex items-center gap-1.5 text-slate-500">
             <Users className="size-4" /> {memberCount} members
           </span>
-          <span className="font-semibold text-brand-600">Details →</span>
+          <span className="rounded-full bg-slate-100 px-3 py-1 font-semibold text-slate-700 transition group-hover:bg-ink group-hover:text-white">View club</span>
         </div>
       </div>
     </Link>
@@ -58,21 +58,21 @@ export function EventCard({ event, registered, viewer }: { event: EventCardData;
   const state = registrationState(event, event._count.registrations);
   const seatsLeft = event.capacity ? Math.max(0, event.capacity - event._count.registrations) : null;
   return (
-    <article className="card card-hover group flex flex-col overflow-hidden">
+    <article className="card card-hover group flex flex-col p-2">
       <Link href={`/events/${event.id}`} className="block">
-        <Cover src={event.image} seed={event.title} category={event.category} className="aspect-[16/9]">
-          <div className="absolute top-3 left-3 flex flex-col items-center rounded-xl bg-white px-2.5 py-1.5 text-center shadow-md">
-            <span className="text-[10px] font-semibold text-gold-600 uppercase">{formatMonth(event.startAt)}</span>
+        <Cover src={event.image} seed={event.title} category={event.category} className="aspect-[16/9] rounded-xl">
+          <div className="absolute top-3 left-3 flex flex-col items-center rounded-xl bg-white px-2.5 py-1.5 text-center shadow-lift">
+            <span className="text-[10px] font-semibold text-brand-600 uppercase">{formatMonth(event.startAt)}</span>
             <span className="font-display text-xl leading-none font-bold text-slate-900">{formatDay(event.startAt)}</span>
             <span className="text-[10px] text-slate-500">{formatWeekday(event.startAt)}</span>
           </div>
           <div className="absolute top-3 right-3 flex gap-1.5">
-            <Badge tone="gold" className="bg-white/95">{event.category}</Badge>
+            <Badge tone="slate" className="bg-white/95 text-slate-700">{event.category}</Badge>
             {event.membersOnly && <Badge tone="violet" className="bg-white/95">Members</Badge>}
           </div>
         </Cover>
       </Link>
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex flex-1 flex-col px-3 pt-4 pb-3">
         <Link href={`/clubs/${event.club.slug}`} className="text-xs font-semibold text-brand-600 hover:underline">
           {event.club.name}
         </Link>
@@ -80,11 +80,11 @@ export function EventCard({ event, registered, viewer }: { event: EventCardData;
           <h3 className="mt-1 line-clamp-2 font-display text-base font-semibold text-slate-900 group-hover:text-brand-700">{event.title}</h3>
         </Link>
         <ul className="mt-3 flex-1 space-y-1.5 text-sm text-slate-500">
-          <li className="flex items-center gap-2"><CalendarDays className="size-4 shrink-0 text-brand-500" />{formatDate(event.startAt)}</li>
-          <li className="flex items-center gap-2"><Clock className="size-4 shrink-0 text-brand-500" />{formatTime(event.startAt)} – {formatTime(event.endAt)}</li>
-          <li className="flex items-center gap-2"><MapPin className="size-4 shrink-0 text-brand-500" /><span className="truncate">{event.venue}</span></li>
+          <li className="flex items-center gap-2"><CalendarDays className="size-4 shrink-0 text-slate-400" />{formatDate(event.startAt)}</li>
+          <li className="flex items-center gap-2"><Clock className="size-4 shrink-0 text-slate-400" />{formatTime(event.startAt)} – {formatTime(event.endAt)}</li>
+          <li className="flex items-center gap-2"><MapPin className="size-4 shrink-0 text-slate-400" /><span className="truncate">{event.venue}</span></li>
         </ul>
-        <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
+        <div className="mt-4 flex items-center justify-between gap-2 border-t border-line pt-3">
           <span className="text-xs text-slate-500">
             {state === "open" && seatsLeft !== null ? `${seatsLeft} seats left` : `${event._count.registrations} registered`}
           </span>

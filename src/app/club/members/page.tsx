@@ -35,9 +35,9 @@ export default async function MembersPage({ searchParams }: { searchParams: Prom
   return (
     <>
       <PageHeader title="Members" description={`Manage who belongs to ${club.name}.`} />
-      <div className="mb-4 inline-flex gap-1 rounded-xl bg-white p-1 shadow-card">
+      <div className="mb-4 inline-flex gap-1 rounded-xl border border-line bg-white p-1">
         {[["APPROVED", "Members", ""], ["PENDING", "Pending requests", "pending"]].map(([s, l, v]) => (
-          <Link key={s} href={v ? `/club/members?tab=${v}` : "/club/members"} className={cn("rounded-lg px-4 py-1.5 text-sm font-medium", tab === s ? "bg-brand-600 text-white" : "text-slate-600 hover:bg-brand-50")}>
+          <Link key={s} href={v ? `/club/members?tab=${v}` : "/club/members"} className={cn("rounded-lg px-4 py-1.5 text-sm font-medium", tab === s ? "bg-ink text-white" : "text-slate-600 hover:bg-slate-100")}>
             {l} ({count(s!)})
           </Link>
         ))}

@@ -35,9 +35,9 @@ export async function NotificationsList({ userId, basePath, page, filter }: { us
           </QuickAction>
         )}
       />
-      <div className="mb-4 inline-flex gap-1 rounded-xl bg-white p-1 shadow-card">
+      <div className="mb-4 inline-flex gap-1 rounded-xl border border-line bg-white p-1">
         {[["all", "All"], ["unread", `Unread (${unread})`]].map(([v, l]) => (
-          <Link key={v} href={v === "all" ? basePath : `${basePath}?filter=unread`} className={cn("rounded-lg px-4 py-1.5 text-sm font-medium", filter === v || (v === "all" && filter !== "unread") ? "bg-brand-600 text-white" : "text-slate-600 hover:bg-brand-50")}>
+          <Link key={v} href={v === "all" ? basePath : `${basePath}?filter=unread`} className={cn("rounded-lg px-4 py-1.5 text-sm font-medium", filter === v || (v === "all" && filter !== "unread") ? "bg-ink text-white" : "text-slate-600 hover:bg-slate-100")}>
             {l}
           </Link>
         ))}

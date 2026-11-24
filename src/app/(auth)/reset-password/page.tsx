@@ -12,7 +12,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
   const valid = reset && !reset.usedAt && reset.expiresAt > new Date();
   return (
     <>
-      <h1 className="text-3xl font-bold">Set a new password</h1>
+      <h1>Set a new password</h1>
       {valid ? (
         <>
           <p className="mt-2 mb-8 text-slate-500">For {reset.user.email}</p>

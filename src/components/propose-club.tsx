@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Modal } from "./modal";
 import { ActionForm, SubmitButton } from "./action-form";
@@ -10,16 +10,27 @@ import { CLUB_CATEGORIES } from "@/lib/constants";
 
 export function ProposeClubButton() {
   const [open, setOpen] = useState(false);
+  // The sidebar's "Propose" shortcut links to #propose.
+  useEffect(() => {
+    const check = () => window.location.hash === "#propose" && setOpen(true);
+    check();
+    window.addEventListener("hashchange", check);
+    return () => window.removeEventListener("hashchange", check);
+  }, []);
+  const close = () => {
+    setOpen(false);
+    if (window.location.hash === "#propose") history.replaceState(null, "", window.location.pathname + window.location.search);
+  };
   return (
     <>
       <button className="btn btn-primary" onClick={() => setOpen(true)}>
         <Plus className="size-4" /> Propose a new club
       </button>
-      <Modal open={open} onClose={() => setOpen(false)} title="Propose a new club" size="lg">
+      <Modal open={open} onClose={close} title="Propose a new club" size="lg">
         <p className="mb-5 text-sm text-slate-500">
           The Student Affairs Office reviews every proposal. If it&apos;s approved you become the club&apos;s representative.
         </p>
-        <ActionForm action={proposeClubAction} resetOnSuccess onSuccess={() => setOpen(false)} className="space-y-4">
+        <ActionForm action={proposeClubAction} resetOnSuccess onSuccess={close} className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Club name" name="name" required>
               <input id="name" name="name" className="input" placeholder="e.g. Science & Astronomy Club" />

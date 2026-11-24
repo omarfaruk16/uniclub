@@ -1,11 +1,17 @@
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+
 export function PageBanner({ title, text, children }: { title: string; text: string; children?: React.ReactNode }) {
   return (
-    <section className="relative overflow-hidden bg-brand-800">
-      <div className="pattern-dots absolute inset-0 opacity-50" />
-      <div className="absolute -top-24 right-0 size-80 rounded-full bg-gold-400/15 blur-3xl" />
-      <div className="container-page relative py-12 sm:py-14">
-        <h1 className="text-3xl font-bold text-white sm:text-4xl">{title}</h1>
-        <p className="mt-3 max-w-2xl text-brand-100">{text}</p>
+    <section className="border-b border-line bg-canvas">
+      <div className="container-page py-8 sm:py-12">
+        <nav aria-label="Breadcrumb" className="mb-3 flex items-center gap-1.5 text-sm text-slate-500">
+          <Link href="/" className="hover:text-slate-900">Home</Link>
+          <ChevronRight className="size-3.5" />
+          <span className="font-medium text-slate-900">{title}</span>
+        </nav>
+        <h1 className="text-3xl font-bold sm:text-[2.5rem] sm:leading-tight">{title}</h1>
+        <p className="mt-2 max-w-2xl text-slate-500 sm:text-lg">{text}</p>
         {children}
       </div>
     </section>

@@ -5,9 +5,9 @@ import { shellData } from "@/lib/shell";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await requireRole(["ADMIN"], "/admin/dashboard");
-  const [settings, shell] = await Promise.all([getSettings(), shellData(user.id)]);
+  const [settings, shell] = await Promise.all([getSettings(), shellData(user.id, "admin")]);
   return (
-    <DashboardShell area="admin" user={user} siteName={settings.siteName} notifications={shell.notifications} unread={shell.unread}>
+    <DashboardShell area="admin" user={user} siteName={settings.siteName} notifications={shell.notifications} unread={shell.unread} badges={shell.badges}>
       {children}
     </DashboardShell>
   );

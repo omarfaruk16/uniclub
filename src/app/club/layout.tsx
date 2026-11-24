@@ -5,9 +5,10 @@ import { shellData } from "@/lib/shell";
 
 export default async function ClubLayout({ children }: { children: React.ReactNode }) {
   const user = await requireRole(["REP"], "/club/dashboard");
-  const [settings, shell, club] = await Promise.all([getSettings(), shellData(user.id), getRepClub(user.id)]);
+  const [settings, club] = await Promise.all([getSettings(), getRepClub(user.id)]);
+  const shell = await shellData(user.id, "club", club?.id);
   return (
-    <DashboardShell area="club" user={user} siteName={settings.siteName} club={club} notifications={shell.notifications} unread={shell.unread}>
+    <DashboardShell area="club" user={user} siteName={settings.siteName} club={club ? { name: club.name, logo: club.logo, category: club.category, status: club.status, slug: club.slug } : null} notifications={shell.notifications} unread={shell.unread} badges={shell.badges}>
       {children}
     </DashboardShell>
   );
