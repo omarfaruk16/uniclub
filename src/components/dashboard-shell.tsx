@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft, ArrowRight, BarChart3, Bell, Building2, CalendarCheck, CalendarPlus, CalendarRange, ChevronRight,
-  ChevronsUpDown, ClipboardList, Compass, Globe, History, LayoutGrid, LogOut, Megaphone, Menu, Plus, Search,
+  ChevronsUpDown, ClipboardList, Compass, Globe, History, ImageIcon, LayoutGrid, LogOut, Megaphone, Menu, Plus, Search,
   Settings, Shield, UserCircle, UserCog, Users, X,
 } from "lucide-react";
 import { Avatar, ClubLogo, Logo } from "./visuals";
@@ -101,7 +101,13 @@ const NAV: Record<Area, { title: string; groups: NavGroup[]; tabs: string[]; cta
           { href: "/admin/notifications", label: "Notifications", icon: Bell },
         ],
       },
-      { title: "General", items: [{ href: "/admin/settings", label: "Settings", icon: Settings }] },
+      {
+        title: "General",
+        items: [
+          { href: "/admin/appearance", label: "Appearance & ads", icon: ImageIcon },
+          { href: "/admin/settings", label: "Settings", icon: Settings },
+        ],
+      },
     ],
     tabs: ["/admin/dashboard", "/admin/clubs", "/admin/users", "/admin/events"],
     cta: { href: "/admin/announcements", label: "New announcement", icon: Megaphone },

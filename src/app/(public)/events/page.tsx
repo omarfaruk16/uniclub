@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdSlot } from "@/components/ad-slot";
 import { CalendarDays } from "lucide-react";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
@@ -55,6 +56,7 @@ export default async function EventsPage({ searchParams }: { searchParams: SP })
     <>
       <PageBanner title="Explore Events" text="Workshops, competitions, seminars and cultural nights from every club on campus." />
       <div className="container-page pt-10">
+        <AdSlot placement="EVENTS" className="mb-6" />
         <Filters
           placeholder="Search events, venues or clubs…"
           tabs={{ name: "when", options: [{ value: "upcoming", label: "Upcoming" }, { value: "past", label: "Past events" }] }}

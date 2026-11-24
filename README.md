@@ -48,6 +48,11 @@ Overview (stats, upcoming events, quick approve of membership requests, recent r
 ### Administrator dashboard (`/admin/*`)
 Overview (total clubs, students, events and registrations, registration chart, attendance, pending club approvals, newest accounts) · Club Management (approve/reject with reason, suspend, reactivate, feature, add/edit/delete) · User Management (add, change role, suspend, delete) · Event Management (feature, cancel, restore, delete) · Representative Management (assign/unassign reps to clubs) · Announcements (university-wide, pinning, moderate club notices) · Analytics & Reports · Notifications · Settings (profile, password, system preferences).
 
+### Google sign-in, site graphics and ads (admin)
+- **Admin → Settings → Google sign-in:** paste the OAuth client ID and secret from Google Cloud Console, optionally restrict sign-in to one email domain, and switch it on. The card shows the exact *Authorised JavaScript origin* and *Authorised redirect URI* (`/api/auth/google/callback`) to copy into Google. The secret is stored server-side and never sent to the browser. Google accounts are matched by Google ID, then by verified email. New people get a student account when registration is open.
+- **Admin → Appearance & ads → Site graphics:** replace the logo, favicon, social share image, sign-in artwork, home hero image, page-banner background, default club cover and default event banner. Removing an image restores the built-in graphic. Supports JPG, PNG, WebP, GIF, AVIF, SVG and ICO (SVGs are served sandboxed).
+- **Admin → Appearance & ads → Banners & ads:** add image banners with an optional link, choose where they show (home top/middle, clubs, events, announcements, student dashboard), order them and hide or show them. Several banners in one place rotate automatically.
+
 ### Rules worth knowing
 - **Roles:** `STUDENT`, `REP`, `ADMIN`. A representative is still a student, so they can open the student dashboard and join clubs or register for events. Every server action re-checks the role.
 - **Club proposals:** when an admin approves a student's proposal, that student becomes the club's representative (and its President).

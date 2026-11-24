@@ -17,7 +17,7 @@ export function ClubCard({
 }) {
   return (
     <Link href={`/clubs/${club.slug}`} className="card card-hover group flex flex-col p-2">
-      <Cover src={club.cover} seed={club.name} category={club.category} className="h-28 rounded-xl" iconSize="size-12" />
+      <Cover kind="club" src={club.cover} seed={club.name} category={club.category} className="h-28 rounded-xl" iconSize="size-12" />
       <div className="flex flex-1 flex-col px-3 pb-3">
         <div className="-mt-8 mb-3 flex items-end justify-between">
           <ClubLogo name={club.name} src={club.logo} category={club.category} size={60} className="shadow-md ring-4 ring-white" />

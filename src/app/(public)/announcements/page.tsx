@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdSlot } from "@/components/ad-slot";
 import { Megaphone } from "lucide-react";
 import { db } from "@/lib/db";
 import { ANNOUNCEMENT_CATEGORIES } from "@/lib/constants";
@@ -45,6 +46,7 @@ export default async function AnnouncementsPage({ searchParams }: { searchParams
     <>
       <PageBanner title="Announcements" text="University notices and updates from every club, in one place." />
       <div className="container-page max-w-4xl pt-10">
+        <AdSlot placement="ANNOUNCEMENTS" className="mb-6" />
         <Filters
           placeholder="Search announcements…"
           tabs={{ name: "scope", options: [{ value: "all", label: "All" }, { value: "university", label: "University" }, { value: "club", label: "Club notices" }] }}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdSlot } from "@/components/ad-slot";
 import { Users } from "lucide-react";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
@@ -44,6 +45,7 @@ export default async function ClubsPage({ searchParams }: { searchParams: SP }) 
     <>
       <PageBanner title="Explore Clubs" text="Find communities that match your interests, from coding and robotics to music, sport and social service." />
       <div className="container-page pt-10">
+        <AdSlot placement="CLUBS" className="mb-6" />
         <Filters
           placeholder="Search clubs by name or interest…"
           selects={[

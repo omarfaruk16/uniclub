@@ -42,7 +42,7 @@ export default async function MyClubsPage() {
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {visible.map((m) => (
             <article key={m.id} className="card flex flex-col overflow-hidden">
-              <Cover src={m.club.cover} seed={m.club.name} category={m.club.category} className="h-20" iconSize="size-10" />
+              <Cover kind="club" src={m.club.cover} seed={m.club.name} category={m.club.category} className="h-20" iconSize="size-10" />
               <div className="flex flex-1 flex-col px-5 pb-5">
                 <div className="-mt-7 mb-3 flex items-end justify-between">
                   <ClubLogo name={m.club.name} src={m.club.logo} category={m.club.category} size={54} className="ring-4 ring-white" />

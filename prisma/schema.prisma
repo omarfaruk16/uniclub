@@ -18,6 +18,7 @@ model User {
   name         String
   email        String   @unique
   studentId    String?  @unique
+  googleId     String?
   passwordHash String
   role         String   @default("STUDENT")
   status       String   @default("ACTIVE")
@@ -36,6 +37,8 @@ model User {
   announcements  Announcement[]
   managedClub    Club?           @relation("ClubRep")
   proposedClubs  Club[]          @relation("ClubProposer")
+
+  @@index([googleId])
 }
 
 model Session {
@@ -171,3 +174,20 @@ model Setting {
   key   String @id
   value String
 }
+
+// Promotional banners / ads shown in fixed places on the site.
+// placement: see BANNER_PLACEMENTS in src/lib/constants.ts
+model Banner {
+  id        String   @id @default(cuid())
+  title     String
+  image     String
+  link      String?
+  placement String
+  active    Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([placement, active])
+}
+

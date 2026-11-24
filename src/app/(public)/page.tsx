@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/ad-slot";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, Megaphone, Users, UserPlus, Search, Ticket } from "lucide-react";
 import { db } from "@/lib/db";
@@ -76,12 +77,21 @@ export default async function HomePage() {
           </div>
 
           <div className="relative order-1 h-[300px] overflow-hidden rounded-[28px] bg-gradient-to-br from-[#EEF7F0] via-[#E1EFE5] to-[#CFE5D6] sm:h-[420px] lg:order-2 lg:h-[540px]">
-            <CampusScene className="absolute inset-0 size-full overflow-visible" />
-            <NextEventCard data={scene} className="absolute top-5 right-5 hidden animate-float sm:block" />
-            <RegisteredCard data={scene} className="absolute top-[42%] right-4 hidden animate-float [animation-delay:1.5s] lg:flex" />
+            {settings.heroImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={settings.heroImage} alt="" className="absolute inset-0 size-full object-cover" />
+            ) : (
+              <>
+                <CampusScene className="absolute inset-0 size-full overflow-visible" />
+                <NextEventCard data={scene} className="absolute top-5 right-5 hidden animate-float sm:block" />
+                <RegisteredCard data={scene} className="absolute top-[42%] right-4 hidden animate-float [animation-delay:1.5s] lg:flex" />
+              </>
+            )}
           </div>
         </div>
       </section>
+
+      <AdSlot placement="HOME_TOP" className="container-page mt-10 block sm:mt-12" />
 
       {/* How it works */}
       <section className="container-page mt-12 sm:mt-16">
@@ -128,6 +138,8 @@ export default async function HomePage() {
             <EmptyState icon={CalendarDays} title="No upcoming events" description="Check back soon for new events." />
           )}
         </section>
+
+        <AdSlot placement="HOME_MIDDLE" />
 
         <section>
           <SectionHeading eyebrow="Latest announcements" title="News & notices" href="/announcements" linkLabel="All announcements" />

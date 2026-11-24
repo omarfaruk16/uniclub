@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
-import { flag, getSettings } from "@/lib/settings";
+import { flag, getSettings, googleReady } from "@/lib/settings";
+import { GoogleButton } from "@/components/google-button";
 import { ROLE_HOME } from "@/lib/constants";
 import { RegisterForm } from "./register-form";
 
@@ -16,7 +17,10 @@ export default async function RegisterPage() {
       <h1>Create your account</h1>
       <p className="mt-2 mb-8 text-slate-500">Student registration for {settings.universityName}.</p>
       {flag(settings.allowRegistration) ? (
-        <RegisterForm />
+        <>
+          {googleReady(settings) && <GoogleButton label="Sign up with Google" />}
+          <RegisterForm />
+        </>
       ) : (
         <div className="rounded-2xl border border-gold-200 bg-gold-50 p-5 text-sm text-gold-700">
           New registrations are temporarily closed. Please contact {settings.contactEmail}.{" "}

@@ -10,12 +10,17 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
     <div className="relative min-h-dvh bg-[#E4F0E7] lg:h-dvh lg:overflow-hidden">
       {/* Illustrated scene: full panel on desktop, header strip on phones */}
       <div className="relative h-[34vh] min-h-56 overflow-hidden bg-gradient-to-br from-[#EEF7F0] via-[#E1EFE5] to-[#CFE5D6] lg:absolute lg:inset-0 lg:h-auto">
-        <div className="absolute inset-0 lg:right-[min(46vw,600px)]">
-          <CampusScene className="absolute inset-x-0 bottom-0 h-full w-full overflow-visible lg:inset-y-0" />
-          <NextEventCard data={data} className="absolute top-[13%] right-[6%] hidden animate-float xl:block" />
-          <RegisteredCard data={data} className="absolute top-[46%] right-[3%] hidden animate-float [animation-delay:1.5s] xl:flex" />
-          <ClubCardMini data={data} className="absolute bottom-[6%] left-[5%] hidden animate-float [animation-delay:3s] xl:block" />
-        </div>
+        {s.authImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={s.authImage} alt="" className="absolute inset-0 size-full object-cover lg:right-[min(46vw,600px)] lg:w-[calc(100%-min(46vw,600px))]" />
+        ) : (
+          <div className="absolute inset-0 lg:right-[min(46vw,600px)]">
+            <CampusScene className="absolute inset-x-0 bottom-0 h-full w-full overflow-visible lg:inset-y-0" />
+            <NextEventCard data={data} className="absolute top-[13%] right-[6%] hidden animate-float xl:block" />
+            <RegisteredCard data={data} className="absolute top-[46%] right-[3%] hidden animate-float [animation-delay:1.5s] xl:flex" />
+            <ClubCardMini data={data} className="absolute bottom-[6%] left-[5%] hidden animate-float [animation-delay:3s] xl:block" />
+          </div>
+        )}
         <Link href="/" aria-label={`${s.siteName} home`} className="absolute top-4 left-4 rounded-2xl bg-white/80 px-3 py-2 backdrop-blur lg:top-7 lg:left-8">
           <Logo name={s.siteName} />
         </Link>

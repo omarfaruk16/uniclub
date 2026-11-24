@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdSlot } from "@/components/ad-slot";
 import Link from "next/link";
 import { CalendarCheck, CalendarDays, MapPin, Plus, Trophy, Users } from "lucide-react";
 import { db } from "@/lib/db";
@@ -93,6 +94,8 @@ export default async function StudentDashboard() {
           linkLabel="View history"
         />
       </div>
+
+      <AdSlot placement="STUDENT_DASHBOARD" />
 
       <div className="grid gap-4 sm:gap-5 xl:grid-cols-[1fr_1.15fr]">
         <Card title="My clubs" subtitle={`${joined.length} joined${pending ? ` · ${pending} waiting for approval` : ""}`} actions={<Link href="/clubs" className="btn btn-outline btn-sm"><Plus className="size-3.5" /> Join</Link>}>

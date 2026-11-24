@@ -53,7 +53,7 @@ export default async function ClubDetailsPage({ params }: P) {
 
   return (
     <>
-      <Cover src={club.cover} seed={club.name} category={club.category} className="h-56 sm:h-72" iconSize="size-28">
+      <Cover kind="club" src={club.cover} seed={club.name} category={club.category} className="h-56 sm:h-72" iconSize="size-28">
         <div className="absolute inset-0 bg-gradient-to-t from-brand-950/85 via-brand-950/30 to-transparent" />
         <div className="container-page relative flex h-full flex-col justify-between py-5">
           <Link href="/clubs" className="inline-flex items-center gap-1 self-start rounded-lg bg-white/15 px-3 py-1.5 text-sm text-white backdrop-blur hover:bg-white/25">

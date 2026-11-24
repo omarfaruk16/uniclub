@@ -9,7 +9,8 @@ import { notify, notifyMany } from "@/lib/notify";
 import { getString, slugify } from "@/lib/utils";
 import { CLUB_CATEGORIES, ROLES } from "@/lib/constants";
 import { removeImage, saveImage } from "@/lib/uploads";
-import { DEFAULT_SETTINGS, type SettingKey } from "@/lib/settings";
+import { GENERAL_KEYS, MEDIA_SLOTS, type SettingKey } from "@/lib/settings";
+import { BANNER_PLACEMENTS } from "@/lib/constants";
 import { setFlash } from "@/lib/flash";
 
 const refresh = () => revalidatePath("/", "layout");
@@ -313,7 +314,7 @@ export async function unassignRepAction(_: ActionResult | null, fd: FormData): P
 export async function saveSettingsAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
   if (!(await admin())) return fail(DENIED);
   const values: Partial<Record<SettingKey, string>> = {};
-  for (const key of Object.keys(DEFAULT_SETTINGS) as SettingKey[]) {
+  for (const key of GENERAL_KEYS) {
     if (key === "allowRegistration" || key === "membershipApproval") values[key] = fd.get(key) === "on" ? "true" : "false";
     else if (fd.has(key)) values[key] = getString(fd, key);
   }
@@ -333,3 +334,114 @@ export async function saveSettingsAction(_: ActionResult | null, fd: FormData): 
   refresh();
   return ok("Settings saved.");
 }
+
+async function putSettings(values: Partial<Record<SettingKey, string>>) {
+  await db.$transaction(
+    Object.entries(values).map(([key, value]) => db.setting.upsert({ where: { key }, create: { key, value: value! }, update: { value: value! } })),
+  );
+}
+
+// ---------------------------------------------------------------- Google sign-in
+
+export async function saveGoogleSettingsAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
+  if (!(await admin())) return fail(DENIED);
+  const enabled = fd.get("googleEnabled") === "on";
+  const clientId = getString(fd, "googleClientId");
+  const secret = getString(fd, "googleClientSecret");
+  const domain = getString(fd, "googleAllowedDomain").toLowerCase().replace(/^@/, "");
+  const current = await db.setting.findUnique({ where: { key: "googleClientSecret" } });
+  const hasSecret = Boolean(secret || current?.value);
+
+  const errors: Record<string, string> = {};
+  if (clientId && !/^[\w.-]+\.apps\.googleusercontent\.com$/.test(clientId)) errors.googleClientId = "This doesn't look like a Google OAuth client ID (it ends in .apps.googleusercontent.com).";
+  if (domain && !/^[a-z0-9.-]+\.[a-z]{2,}$/.test(domain)) errors.googleAllowedDomain = "Enter a domain such as unique.edu, or leave it empty.";
+  if (enabled && !clientId) errors.googleClientId = "Required to switch Google sign-in on.";
+  if (enabled && !hasSecret) errors.googleClientSecret = "Required to switch Google sign-in on.";
+  if (Object.keys(errors).length) return fail("Please fix the highlighted fields.", errors);
+
+  const values: Partial<Record<SettingKey, string>> = { googleEnabled: enabled ? "true" : "false", googleClientId: clientId, googleAllowedDomain: domain };
+  // An empty secret field keeps the saved secret; "remove" clears it.
+  if (secret) values.googleClientSecret = secret;
+  if (fd.get("clearSecret") === "1") values.googleClientSecret = "";
+  await putSettings(values);
+  refresh();
+  return ok(enabled ? "Google sign-in is on." : "Google settings saved. Sign-in with Google is off.");
+}
+
+// ---------------------------------------------------------------- site graphics
+
+export async function saveMediaAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
+  if (!(await admin())) return fail(DENIED);
+  const slot = MEDIA_SLOTS.find((m) => m.key === getString(fd, "slot"));
+  if (!slot) return fail("Unknown image slot.");
+  const current = (await db.setting.findUnique({ where: { key: slot.key } }))?.value ?? "";
+  const upload = await saveImage(fd.get("image"), `site-${slot.key}`, { vector: true });
+  if (upload && "error" in upload) return fail(upload.error, { image: upload.error });
+  if (upload) {
+    await removeImage(current);
+    await putSettings({ [slot.key]: upload.url });
+    refresh();
+    return ok(`${slot.label} updated.`);
+  }
+  if (fd.get("remove_image") === "1") {
+    await removeImage(current);
+    await putSettings({ [slot.key]: "" });
+    refresh();
+    return ok(`${slot.label} reset to the built-in graphic.`);
+  }
+  return fail("Choose an image first.", { image: "Choose an image to upload." });
+}
+
+// ---------------------------------------------------------------- banners & ads
+
+export async function saveBannerAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
+  if (!(await admin())) return fail(DENIED);
+  const id = getString(fd, "id");
+  const title = getString(fd, "title");
+  const link = getString(fd, "link");
+  const placement = getString(fd, "placement");
+  const sortOrder = Number(getString(fd, "sortOrder") || 0);
+  const errors: Record<string, string> = {};
+  if (title.length < 2) errors.title = "Give the banner a name (only admins see it, and it is used as the image description).";
+  if (!BANNER_PLACEMENTS.some((p) => p.value === placement)) errors.placement = "Choose where the banner appears.";
+  if (link && !/^(https?:\/\/|\/)/.test(link)) errors.link = "Use a full web address (https://…) or a site path such as /events.";
+  if (!Number.isInteger(sortOrder) || sortOrder < 0 || sortOrder > 999) errors.sortOrder = "Use a whole number from 0 to 999.";
+  const existing = id ? await db.banner.findUnique({ where: { id } }) : null;
+  if (id && !existing) return fail("Banner not found.");
+  const upload = await saveImage(fd.get("image"), "banner", { vector: true });
+  if (upload && "error" in upload) errors.image = upload.error;
+  if (!upload && !existing) errors.image = "Upload the banner image.";
+  if (Object.keys(errors).length) {
+    if (upload && "url" in upload) await removeImage(upload.url);
+    return fail("Please fix the highlighted fields.", errors);
+  }
+  const data = { title, link: link || null, placement, sortOrder, active: fd.get("active") === "on" };
+  if (existing) {
+    if (upload && "url" in upload) await removeImage(existing.image);
+    await db.banner.update({ where: { id }, data: { ...data, ...(upload && "url" in upload ? { image: upload.url } : {}) } });
+  } else {
+    await db.banner.create({ data: { ...data, image: (upload as { url: string }).url } });
+  }
+  refresh();
+  return ok(existing ? "Banner updated." : "Banner added.");
+}
+
+export async function toggleBannerAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
+  if (!(await admin())) return fail(DENIED);
+  const banner = await db.banner.findUnique({ where: { id: getString(fd, "id") } });
+  if (!banner) return fail("Banner not found.");
+  await db.banner.update({ where: { id: banner.id }, data: { active: !banner.active } });
+  refresh();
+  return ok(banner.active ? "Banner hidden." : "Banner is live.");
+}
+
+export async function deleteBannerAction(_: ActionResult | null, fd: FormData): Promise<ActionResult> {
+  if (!(await admin())) return fail(DENIED);
+  const banner = await db.banner.findUnique({ where: { id: getString(fd, "id") } });
+  if (!banner) return fail("Banner not found.");
+  await db.banner.delete({ where: { id: banner.id } });
+  await removeImage(banner.image);
+  refresh();
+  return ok("Banner deleted.");
+}
+
